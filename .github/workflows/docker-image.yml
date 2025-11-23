@@ -76,7 +76,7 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           archs: amd64
-          image: "python/python-library"
+          image: "django/django-app"
           tags: latest
           containerfiles: Dockerfile
           layers: false
@@ -87,14 +87,14 @@ jobs:
         id: push
         with:
           registry: ${{ env.GAR_LOCATION }}
-          image: "python/python-library"
+          image: "django/django-app"
           tags: latest
 
       - name: Build container image from Minimus base
         uses: redhat-actions/buildah-build@v2
         with:
           archs: amd64
-          image: "python/python-mini"
+          image: "django/django-creator"
           tags: latest
           containerfiles: Dockerfile.mini
           layers: false
@@ -105,28 +105,28 @@ jobs:
         id: push-mini
         with:
           registry: ${{ env.GAR_LOCATION }}
-          image: "python/python-mini"
+          image: "django/django-creator"
           tags: latest
         
 
       - name: Sign the library image
         run: |
           cosign sign -y --recursive \
-            ${{ env.GAR_LOCATION }}python/python-library@${{ steps.push.outputs.digest }}
+            ${{ env.GAR_LOCATION }}django/django-app@${{ steps.push.outputs.digest }}
         env:
           COSIGN_EXPERIMENTAL: 1
 
       - name: Sign the Minimus image
         run: |
           cosign sign -y --recursive \
-            ${{ env.GAR_LOCATION }}python/python-mini@${{ steps.push-mini.outputs.digest }}
+            ${{ env.GAR_LOCATION }}django/django-creator@${{ steps.push-mini.outputs.digest }}
         env:
           COSIGN_EXPERIMENTAL: 1
           
       - name: "Scan python image with grype"
         uses: anchore/scan-action@v6
         with:
-          image: '${{ env.GAR_LOCATION }}python/python-library:latest'
+          image: '${{ env.GAR_LOCATION }}django/django-app:latest'
           fail-build: false
           output-format: 'table'
           severity-cutoff: 'critical'
@@ -135,13 +135,13 @@ jobs:
         uses: aquasecurity/trivy-action@0.30.0
         if: always()
         with:
-          image-ref: '${{ env.GAR_LOCATION }}python/python-library:latest'
+          image-ref: '${{ env.GAR_LOCATION }}django/django-app:latest'
           format: 'table'
 
       - name: "Scan python-mini image with grype"
         uses: anchore/scan-action@v6
         with:
-          image: '${{ env.GAR_LOCATION }}python/python-mini:latest'
+          image: '${{ env.GAR_LOCATION }}django/django-creator:latest'
           fail-build: false
           output-format: 'table'
           severity-cutoff: 'critical'
@@ -151,6 +151,6 @@ jobs:
         uses: aquasecurity/trivy-action@0.30.0
         if: always()
         with:
-          image-ref: '${{ env.GAR_LOCATION }}python/python-mini:latest'
+          image-ref: '${{ env.GAR_LOCATION }}django/django-creator:latest'
           format: 'table'
 
