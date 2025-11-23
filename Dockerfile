@@ -1,6 +1,8 @@
 # Change to Minimus Python base
 FROM reg.mini.dev/python:3.13.9-dev
 
+ARG MINIMUS_TOKEN=$MINIMUS_TOKEN
+
 ENV VIRTUAL_ENV /env
 ENV PATH /env/bin:$PATH
 
