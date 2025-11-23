@@ -1,5 +1,5 @@
 # Change to Minimus Python base
-FROM reg.mini.dev/python:3.13.9
+FROM reg.mini.dev/python:3.13.9-dev
 
 ENV VIRTUAL_ENV /env
 ENV PATH /env/bin:$PATH
