@@ -50,28 +50,6 @@ jobs:
         run: |-
           gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
 
-      - name: "Check Minimus image signature"
-        run: |-
-          cosign verify \
-            --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-            --certificate-identity=https://github.com/minimusio/images/.github/workflows/build.yaml@refs/heads/main \
-            reg.mini.dev/python:latest
-
-      - name: "Download Minimus image SBOM"
-        run: |-
-          cosign download attestation \
-           --predicate-type=https://spdx.dev/Document \
-           --platform linux/amd64 \
-           reg.mini.dev/python:latest | jq '.payload | @base64d |
-           fromjson | .predicate'  > spdx.json
-
-      - name: "Scan Minimus image SBOM"
-        uses: aquasecurity/trivy-action@0.30.0
-        with:
-          scan-type: 'sbom'
-          scan-ref: 'spdx.json'
-          format: 'table'
-
       - name: Build container image from Dockerhub base
         uses: redhat-actions/buildah-build@v2
         with:
