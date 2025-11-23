@@ -1,18 +1,24 @@
-FROM reg.mini.dev/python:3.13-dev AS builder 
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-ENV PATH="/myapp/venv/bin:$PATH"
-EXPOSE 8000
-WORKDIR /myapp 
-RUN python -m venv /myapp/venv
-COPY requirements.txt /myapp/
-RUN pip3 install -r requirements.txt --no-cache-dir
-COPY src/ /myapp/ 
+# Change to Minimus django-app-basxe
+FROM reg.mini.dev/1875/django-app-base 3.13.9
 
-FROM reg.mini.dev/python:3.13
-ENV PYTHONUNBUFFERED=1
-ENV PATH="/myapp/venv/bin:$PATH"
-COPY --chown=1000:1000 --from=builder /myapp /myapp
-ENTRYPOINT ["python3"] 
-CMD ["/myapp/manage.py", "runserver", "0.0.0.0:8000"]
+ENV VIRTUAL_ENV /env
+ENV PATH /env/bin:$PATH
+
+USER 0
+
+
+# No need to install packages
+# RUN apk add --no-cache nginx build-base ffmpeg gcc openssl-dev opus-dev pkgconf bash py3-cryptography py3-django py3-jwt py3-requests py3-urllib3 py3-gunicorn linux-headers
+
+WORKDIR /app
+COPY app /app
+COPY config/nginx.conf /etc/nginx/nginx.conf
+
+# Add repository credentials
+RUN echo "https://minimus:${MINIMUS_TOKEN}@packages.mini.dev/os" > /etc/apk/repositories
+RUN set -ex && \
+    python -m venv /env && \
+    source /env/bin/activate && \
+    /env/bin/pip install -r requirements.txt --no-cache-dir
+
 
