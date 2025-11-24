@@ -1,3 +1,4 @@
 Django
 environs
 legacy-cgi
+gunicorn
