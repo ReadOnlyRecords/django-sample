@@ -20,4 +20,6 @@ RUN set -ex && \
     source /env/bin/activate && \
     /env/bin/pip install -r requirements.txt --no-cache-dir
 
-
+EXPOSE 8000
+ENTRYPOINT ["/bin/bash"]
+CMD ["cmd.sh"]
