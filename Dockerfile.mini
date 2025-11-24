@@ -1,5 +1,5 @@
-# Change to Minimus django-app-basxe
-FROM reg.mini.dev/1875/django-app-base:3.13.9-dev
+# Change to Minimus django-app-base
+FROM reg.mini.dev/1875/django-app-base:3.13.9
 
 ENV VIRTUAL_ENV /env
 ENV PATH /env/bin:$PATH
