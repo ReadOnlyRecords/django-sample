@@ -111,12 +111,7 @@ jobs:
           output-format: 'table'
           severity-cutoff: 'critical'
           by-cve: true          
-      - name: Scan python image
-        uses: aquasecurity/trivy-action@0.30.0
-        if: always()
-        with:
-          image-ref: '${{ env.GAR_LOCATION }}django/django-app:latest'
-          format: 'table'
+
 
       - name: "Scan Creator image with grype"
         uses: anchore/scan-action@v6
@@ -127,10 +122,5 @@ jobs:
           severity-cutoff: 'critical'
           by-cve: true
 
-      - name: Scan Creator image
-        uses: aquasecurity/trivy-action@0.30.0
-        if: always()
-        with:
-          image-ref: '${{ env.GAR_LOCATION }}django/django-creator:latest'
-          format: 'table'
+
 
